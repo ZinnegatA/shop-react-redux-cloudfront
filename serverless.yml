@@ -4,8 +4,8 @@ frameworkVersion: "3"
 
 provider:
   name: aws
-  runtime: nodejs14.x
-  region: eu-west-1
+  runtime: nodejs16.x
+  region: us-east-1
   # setup profile for AWS CLI.
   # profile: node-aws
 
@@ -19,7 +19,7 @@ plugins:
 
 custom:
   client:
-    bucketName: my-store-app
+    bucketName: epam-course-shop-app-bucket
     distributionFolder: dist
   s3BucketName: ${self:custom.client.bucketName}
 
@@ -36,12 +36,16 @@ resources:
       Type: AWS::S3::Bucket
       Properties:
         BucketName: ${self:custom.s3BucketName}
-        AccessControl: PublicRead
+        PublicAccessBlockConfiguration:
+          BlockPublicAcls: false
+          IgnorePublicAcls: false
+          BlockPublicPolicy: false
+          RestrictPublicBuckets: false
         WebsiteConfiguration:
           IndexDocument: index.html
           ErrorDocument: index.html
-        # VersioningConfiguration:
-        #   Status: Enabled
+        VersioningConfiguration:
+          Status: Enabled
 
     ## Specifying the policies to make sure all files inside the Bucket are avaialble to CloudFront
     WebAppS3BucketPolicy:
